@@ -1,8 +1,6 @@
 package sbu.cs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /*
     For this exercise, you must simulate a CPU with a single core.
@@ -23,7 +21,8 @@ public class CPU_Simulator
         long processingTime;
         String ID;
         public Task(String ID, long processingTime) {
-        // TODO
+            this.ID = ID;
+            this.processingTime = processingTime;
         }
 
     /*
@@ -32,7 +31,12 @@ public class CPU_Simulator
     */
         @Override
         public void run() {
-        // TODO
+            try {
+                Thread.sleep(this.processingTime);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -44,7 +48,24 @@ public class CPU_Simulator
     public ArrayList<String> startSimulation(ArrayList<Task> tasks) {
         ArrayList<String> executedTasks = new ArrayList<>();
 
-        // TODO
+        //sort the arraylist
+        int n = tasks.size();
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < n-i; j++) {
+                if (tasks.get(j-1).processingTime > tasks.get(j).processingTime) {
+                    Task temp = tasks.get(j-1);
+                    tasks.set(j-1, tasks.get(j));
+                    tasks.set(j, temp);
+                }
+            }
+        }
+
+        //start the threads and add them to the executed list
+        for (Task task : tasks) {
+            Thread t = new Thread(task);
+            t.start();
+            executedTasks.add(task.ID);
+        }
 
         return executedTasks;
     }
