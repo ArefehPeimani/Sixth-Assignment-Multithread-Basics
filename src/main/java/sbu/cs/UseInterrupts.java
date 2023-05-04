@@ -36,7 +36,8 @@ public class UseInterrupts
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-
+                    System.out.println(this.getName() + " has been interrupted.");
+                    return;
                 }
                 finally {
                     this.sleepCounter--;
@@ -69,7 +70,10 @@ public class UseInterrupts
             for (int i = 0; i < 10; i += 3)
             {
                 i -= this.value;
-
+                if (this.isInterrupted()) {
+                    System.out.println(this.getName() + " has been interrupted.");
+                    return;
+                }
             }
         }
     }
@@ -82,12 +86,24 @@ public class UseInterrupts
         SleepThread sleepThread = new SleepThread(5);
         sleepThread.start();
 
-        // TODO  Check if this thread runs for longer than 3 seconds (if it does, interrupt it)
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < 3000) {
+            // let the thread run
+        }
+        if (sleepThread.isAlive()) {
+            sleepThread.interrupt();
+        }
 
         LoopThread loopThread = new LoopThread(3);
         loopThread.start();
 
-        // TODO  Check if this thread runs for longer than 3 seconds (if it does, interrupt it)
+        start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < 3000) {
+            // let the thread run
+        }
+        if (loopThread.isAlive()) {
+            loopThread.interrupt();
+        }
 
     }
 }
